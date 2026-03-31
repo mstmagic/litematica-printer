@@ -16,21 +16,28 @@ public class InteractActionImpl extends InteractAction {
 
     @Override
     protected void interact(Minecraft client, LocalPlayer player, InteractionHand hand, BlockHitResult hitResult) {
-        if (client.gameMode != null) {
-            PrepareAction lookAction = LitematicaMixinMod.printer != null
-                    ? LitematicaMixinMod.printer.actionHandler.lookAction : null;
+        if (client.gameMode == null) return;
 
-            if (lookAction != null && (lookAction.modifyYaw || lookAction.modifyPitch)) {
-                float savedYaw = player.getYRot();
-                float savedPitch = player.getXRot();
-                if (lookAction.modifyYaw) player.setYRot(lookAction.yaw);
-                if (lookAction.modifyPitch) player.setXRot(lookAction.pitch);
-                client.gameMode.useItemOn(player, hand, hitResult);
-                player.setYRot(savedYaw);
-                player.setXRot(savedPitch);
-            } else {
-                client.gameMode.useItemOn(player, hand, hitResult);
-            }
+        PrepareAction lookAction = LitematicaMixinMod.printer != null
+                ? LitematicaMixinMod.printer.actionHandler.lookAction : null;
+
+        boolean needsSneak = context.shouldSneak && !player.isShiftKeyDown();
+        boolean needsRotate = lookAction != null && (lookAction.modifyYaw || lookAction.modifyPitch);
+
+        if (needsSneak) player.setShiftKeyDown(true);
+
+        if (needsRotate) {
+            float savedYaw = player.getYRot();
+            float savedPitch = player.getXRot();
+            if (lookAction.modifyYaw) player.setYRot(lookAction.yaw);
+            if (lookAction.modifyPitch) player.setXRot(lookAction.pitch);
+            client.gameMode.useItemOn(player, hand, hitResult);
+            player.setYRot(savedYaw);
+            player.setXRot(savedPitch);
+        } else {
+            client.gameMode.useItemOn(player, hand, hitResult);
         }
+
+        if (needsSneak) player.setShiftKeyDown(false);
     }
 }

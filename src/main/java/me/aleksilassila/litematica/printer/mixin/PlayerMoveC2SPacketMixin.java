@@ -1,7 +1,6 @@
 package me.aleksilassila.litematica.printer.mixin;
 
 import me.aleksilassila.litematica.printer.LitematicaMixinMod;
-import me.aleksilassila.litematica.printer.Printer;
 import me.aleksilassila.litematica.printer.actions.PrepareAction;
 import me.aleksilassila.litematica.printer.config.Configs;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
@@ -13,39 +12,25 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class PlayerMoveC2SPacketMixin {
     @ModifyVariable(method = "<init>(DDDFFZZZZ)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static float modifyLookYaw(float yaw) {
-        Printer printer = LitematicaMixinMod.printer;
-        if (printer == null) {
+        if (LitematicaMixinMod.printer == null || !Configs.ROTATE.getBooleanValue()) {
             return yaw;
         }
-        if (!Configs.ROTATE.getBooleanValue()) {
+        PrepareAction action = LitematicaMixinMod.printer.actionHandler.lookAction;
+        if (action == null || !action.modifyYaw) {
             return yaw;
         }
-
-        PrepareAction action = printer.actionHandler.lookAction;
-        if (action != null && action.modifyYaw) {
-            Printer.printDebug("YAW: {}", action.yaw);
-            return action.yaw;
-        } else {
-            return yaw;
-        }
+        return action.yaw;
     }
 
     @ModifyVariable(method = "<init>(DDDFFZZZZ)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
     private static float modifyLookPitch(float pitch) {
-        Printer printer = LitematicaMixinMod.printer;
-        if (printer == null) {
+        if (LitematicaMixinMod.printer == null || !Configs.ROTATE.getBooleanValue()) {
             return pitch;
         }
-        if (!Configs.ROTATE.getBooleanValue()) {
+        PrepareAction action = LitematicaMixinMod.printer.actionHandler.lookAction;
+        if (action == null || !action.modifyPitch) {
             return pitch;
         }
-
-        PrepareAction action = printer.actionHandler.lookAction;
-        if (action != null && action.modifyPitch) {
-            Printer.printDebug("PITCH: {}", action.pitch);
-            return action.pitch;
-        } else {
-            return pitch;
-        }
+        return action.pitch;
     }
 }
