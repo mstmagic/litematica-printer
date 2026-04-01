@@ -21,12 +21,7 @@ public class InteractActionImpl extends InteractAction {
         PrepareAction lookAction = LitematicaMixinMod.printer != null
                 ? LitematicaMixinMod.printer.actionHandler.lookAction : null;
 
-        boolean needsSneak = context.shouldSneak && !player.isShiftKeyDown();
-        boolean needsRotate = lookAction != null && (lookAction.modifyYaw || lookAction.modifyPitch);
-
-        if (needsSneak) player.setShiftKeyDown(true);
-
-        if (needsRotate) {
+        if (lookAction != null && (lookAction.modifyYaw || lookAction.modifyPitch)) {
             float savedYaw = player.getYRot();
             float savedPitch = player.getXRot();
             if (lookAction.modifyYaw) player.setYRot(lookAction.yaw);
@@ -37,7 +32,5 @@ public class InteractActionImpl extends InteractAction {
         } else {
             client.gameMode.useItemOn(player, hand, hitResult);
         }
-
-        if (needsSneak) player.setShiftKeyDown(false);
     }
 }
