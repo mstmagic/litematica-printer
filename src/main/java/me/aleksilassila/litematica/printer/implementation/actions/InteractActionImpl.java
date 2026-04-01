@@ -4,8 +4,11 @@ import me.aleksilassila.litematica.printer.LitematicaMixinMod;
 import me.aleksilassila.litematica.printer.actions.InteractAction;
 import me.aleksilassila.litematica.printer.actions.PrepareAction;
 import me.aleksilassila.litematica.printer.implementation.PrinterPlacementContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -32,5 +35,25 @@ public class InteractActionImpl extends InteractAction {
         } else {
             client.gameMode.useItemOn(player, hand, hitResult);
         }
+
+        sendPlacementMessage(player);
+    }
+
+    private void sendPlacementMessage(LocalPlayer player) {
+        BlockPos pos = context.targetBlockPos != null
+                ? context.targetBlockPos
+                : context.getClickedPos().relative(context.getClickedFace());
+
+        String itemName = !context.getItemInHand().isEmpty()
+                ? context.getItemInHand().getHoverName().getString()
+                : "block";
+
+        player.displayClientMessage(
+                Component.literal("[Printer] ").withStyle(ChatFormatting.GREEN)
+                        .append(Component.literal(itemName).withStyle(ChatFormatting.YELLOW))
+                        .append(Component.literal(" at ").withStyle(ChatFormatting.WHITE))
+                        .append(Component.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ()).withStyle(ChatFormatting.AQUA)),
+                false
+        );
     }
 }

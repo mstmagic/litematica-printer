@@ -3,6 +3,7 @@ package me.aleksilassila.litematica.printer.implementation;
 import javax.annotation.Nullable;
 import org.jspecify.annotations.NonNull;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +17,8 @@ public class PrinterPlacementContext extends BlockPlaceContext
     public final boolean shouldSneak;
     public final BlockHitResult hitResult;
     public final int requiredItemSlot;
+    // Set by the guide after construction so InteractActionImpl can display the correct target position.
+    public @Nullable BlockPos targetBlockPos = null;
 
     public PrinterPlacementContext(Player player, BlockHitResult hitResult, ItemStack requiredItem,
                                    int requiredItemSlot)

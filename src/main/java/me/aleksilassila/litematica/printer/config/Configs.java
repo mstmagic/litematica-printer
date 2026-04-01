@@ -24,6 +24,9 @@ public class Configs {
     public static final ConfigBoolean FALLING_BLOCK_PRINT_IN_AIR = new ConfigBoolean("fallingBlockPrintInAir", false).apply(GENERIC_KEY);
     public static final ConfigInteger PRINTER_CACHE_MS = new ConfigInteger("printerCacheMs", 200, 0, 5000).apply(GENERIC_KEY);
     public static final ConfigBoolean ROTATE = new ConfigBoolean("rotate", true).apply(GENERIC_KEY);
+    // Minimum ticks between block placements (UseItemOn packets), independent of printingInterval.
+    // At 20 ticks/sec: 40 = 2 s, 60 = 3 s.  Raise this on strict servers (e.g. Hypixel).
+    public static final ConfigInteger PLACEMENT_COOLDOWN_TICKS = new ConfigInteger("placementCooldownTicks", 40, 0, 400).apply(GENERIC_KEY);
 
     public static ImmutableList<IConfigBase> getConfigList() {
         List<IConfigBase> list = new java.util.ArrayList<>(fi.dy.masa.litematica.config.Configs.Generic.OPTIONS);
@@ -38,6 +41,7 @@ public class Configs {
         list.add(FALLING_BLOCK_PRINT_IN_AIR);
         list.add(PRINTER_CACHE_MS);
         list.add(ROTATE);
+        list.add(PLACEMENT_COOLDOWN_TICKS);
 
         return ImmutableList.copyOf(list);
     }

@@ -37,6 +37,7 @@ public abstract class InteractionGuide extends Guide {
             return actions;
 
         PrinterPlacementContext ctx = new PrinterPlacementContext(player, hitResult, requiredItem, requiredSlot);
+        ctx.targetBlockPos = state.blockPos;
 
         actions.add(new ReleaseShiftAction());
         actions.add(new PrepareAction(ctx));

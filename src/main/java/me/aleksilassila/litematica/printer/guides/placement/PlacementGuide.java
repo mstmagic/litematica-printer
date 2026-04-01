@@ -104,6 +104,7 @@ abstract public class PlacementGuide extends Guide {
         PrinterPlacementContext ctx = getPlacementContext(player);
 
         if (ctx == null) return actions;
+        ctx.targetBlockPos = state.blockPos;
         actions.add(new PrepareAction(ctx));
         actions.add(new InteractActionImpl(ctx));
         if (ctx.shouldSneak) actions.add(new ReleaseShiftAction());
